@@ -29,9 +29,11 @@ void LocomotionModule::findActiveModules(){
   //increment through all connections
   for(int i = 0; i < this->num_connections; i++){
     //see if it has been plugged in 
-    std::string loc("/connector_" + std::to_string(this->connector_num[i]));
+    std::string loc("connector_" + std::string(std::to_string(this->connector_num[i]) + "/type"));
+    ROS_INFO("LOOKING FOR %s",loc.c_str());
     std::string key;
     if (ros::param::search(loc, key) && ~active_ports[i]){
+      ROS_INFO("FOUND_IT");
       //get the value
       std::string val;
       ros::param::get(key, val);
@@ -46,7 +48,7 @@ void LocomotionModule::findActiveModules(){
   }
 }
 
-void LocomotionModule::updateDesiredVelocity(const geometry_msgs::Twist::ConstPtr &msg){
+void LocomotionModule::updateDesiredVelocity(const geometry_msgs::Twist::ConstPtr& msg){
   //get the desired velocities
   //double robot_linear = msg->linear.x;
   //double robot_angular = msg->angular.z;
@@ -54,13 +56,16 @@ void LocomotionModule::updateDesiredVelocity(const geometry_msgs::Twist::ConstPt
 //  geometry_msgs::Twist des_robot_vel = *msg;
 
   //cycle through each module if it is a motor, calculate the motor desired motor velocity
+  ROS_INFO("GOT COMMANDlinear: %f, angular %f",msg->linear.x,msg->angular.z);
   for(int i = 0; i < this->actuation.size(); i++){
-  	actuation[i]->calculateDesiredVelocity(*msg);
+  	actuation[i]->calculateDesiredVelocity(msg->linear.x,msg->linear.y,msg->angular.z);
+	ROS_INFO("Calculating Velocities");
   }
   
   //call funtion to publish the desired motor velocities
   for(int i = 0; i < this->actuation.size(); i++){
   	actuation[i]->publishDesiredVelocity();
+	ROS_INFO("Publishing Velocities");
   } 
 }
 

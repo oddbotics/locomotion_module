@@ -32,6 +32,10 @@ int main(int argc, char** argv){
   current_time = ros::Time::now();
   last_time = ros::Time::now();
 
+  x = 0.0;
+  y = 0.0;
+  th = 0.0;
+
   ros::Rate r(30.0);
   while(n.ok()){
 
@@ -48,12 +52,16 @@ int main(int argc, char** argv){
     y += delta_y;
     th += delta_th;
 
+    if(isnan(x)){ x = 0.0;}
+    if(isnan(y)){ y = 0.0;}
+    if(isnan(th)){th= 0.0;}
+
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
 
     //first, we'll publish the transform over tf
     geometry_msgs::TransformStamped odom_trans;
-    odom_trans.header.stamp = current_time;
+    odom_trans.header.stamp = ros::Time(0);//current_time;
     odom_trans.header.frame_id = "odom";
     odom_trans.child_frame_id = "base_link";
 

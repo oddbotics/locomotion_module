@@ -14,7 +14,7 @@ class DCMotor : public Module
     DCMotor(int location);
     geometry_msgs::Twist getVelocity(){return this->motor_vel_mps;}
     std::string getType(){return "dc_motor";} 
-    void calculateDesiredVelocity(geometry_msgs::Twist des_robot_vel);  
+    void calculateDesiredVelocity(double x, double y, double wz);  
     void publishDesiredVelocity();
 
   private:

@@ -67,7 +67,7 @@ int main(int argc, char** argv){
   tf::Quaternion c1_quat;
   c1_quat.setRPY(c1_r, c1_p, c1_yaw);
 
-  ros::Rate rate(10.0);
+  ros::Rate rate(30.0);
   while (node.ok()){
     //publish base_link to all of the connectors
     for(int i = 0; i < locations.size(); i++){
@@ -75,17 +75,17 @@ int main(int argc, char** argv){
       tf::Quaternion quat;
       quat.setRPY(r[i],p[i],ya[i]);
       transform.setRotation(quat);
-      br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link" ,locations[i]));
+      br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "base_link" ,locations[i]));
     }    
 
     //publish base_footprint to the base_link
     transform.setOrigin(foot_pos);
     transform.setRotation( foot_quat );
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_footprint" , "base_link"));
+    br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "base_footprint" , "base_link"));
     //publish base_link to the top connector 1
     transform.setOrigin(c1_pos);
     transform.setRotation( c1_quat );
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link" , "connector_1"));
+    br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "base_link" , "connector_1"));
     rate.sleep();
   }
   return 0;
