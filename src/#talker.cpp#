@@ -68,9 +68,9 @@ int main(int argc, char **argv)
   // Main loop.
   while (nh.ok())
   {
-    // Publish the message.
-    node_core->publishMessageLeft(&pub_message_left);
-    node_core->publishMessageRight(&pub_message_right);
+    // Publish the message. Do this in the callback for subscribing? 
+    node_core->publishMessage(&pub_message_left,0);
+    node_core->publishMessage(&pub_message_right,1);
 
     ros::spinOnce();
     r.sleep();

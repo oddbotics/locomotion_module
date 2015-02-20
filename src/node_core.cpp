@@ -41,18 +41,26 @@ NodeCore::~NodeCore()
 {
 }
 
-void NodeCore::publishMessage(ros::Publisher *pub_message)
+void NodeCore::publishMessageLeft(ros::Publisher *pub_message, int side)
 {
-  node_core::NodeCoreData msg;
+  //if side is 0, its left, otherwise its right
+  std::float32 msg;
   msg.message = message_;
   msg.a = a_;
   msg.b = b_;
-
+ 
   pub_message->publish(msg);
 }
 
-void NodeCore::messageCallback(const node_core::NodeCoreData::ConstPtr &msg)
+
+
+void NodeCore::messageCallback(const geometry_msgs::Twist::ConstPtr &msg)
 {
+  //take in the twist, convert to new messages .
+
+  //node_core->publishMessage(&pub_message_left,0);
+  //node_core->publishMessage(&pub_message_right,1);
+
   message_ = msg->message;
   a_ = msg->a;
   b_ = msg->b;

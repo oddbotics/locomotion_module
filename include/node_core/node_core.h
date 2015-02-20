@@ -64,10 +64,10 @@ public:
   void configCallback(node_core::nodeCoreConfig &config, uint32_t level);
 
   //! Publish the message.
-  void publishMessage(ros::Publisher *pub_message);
+  void publishMessage(ros::Publisher *pub_message, int side);
 
   //! Callback function for subscriber.
-  void messageCallback(const node_example::NodeExampleData::ConstPtr &msg);
+  void messageCallback(const geometry_msgs::Twist &msg);
 
   double r;
 
