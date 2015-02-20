@@ -1,4 +1,4 @@
-#include "locomotion_module.h"
+#include "locomotion_module/locomotion_module.h"
 
 LocomotionModule::LocomotionModule()
 {
