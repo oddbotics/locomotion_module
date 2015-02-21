@@ -90,7 +90,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES oddbot_lib
-#  CATKIN_DEPENDS message_generation roscpp std_msgs
+  CATKIN_DEPENDS message_generation roscpp std_msgs dynamic_reconfigure
 #  DEPENDS system_lib
 )
 
@@ -112,7 +112,7 @@ include_directories(include
 # )
 
 ## Declare a cpp executable
-add_executable(locom_main src/locom_main.cpp)
+add_executable(locom_main src/locom_main.cpp src/locomotion_module.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

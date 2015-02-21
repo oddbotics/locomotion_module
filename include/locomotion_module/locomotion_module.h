@@ -31,7 +31,7 @@ class LocomotionModule
 
   void publishMessage(ros::Publisher *pub_message, int side);
 
-  void messageCallback(const geometry_msgs::Twist &msg);
+  void messageCallback(const geometry_msgs::Twist::ConstPtr &msg);
 
   double r_ = .2;
   double r_center_ = .1;

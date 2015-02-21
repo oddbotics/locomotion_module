@@ -90,7 +90,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES oddbot_lib
-#  CATKIN_DEPENDS message_generation roscpp std_msgs
+  CATKIN_DEPENDS message_generation roscpp std_msgs dynamic_reconfigure
 #  DEPENDS system_lib
 )
 
@@ -117,7 +117,7 @@ add_executable(locom_main src/locom_main.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(oddbot_boot_node oddbot_boot_generate_messages_cpp)
-add_dependencies(locomotion_module ${PROJECT_NAME}_gencfg)
+add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(locom_main
