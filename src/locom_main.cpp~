@@ -31,7 +31,7 @@
  *
  */
 
-#include "node_core/node_core.h"
+#include "locomotion_module.h"
 
 int main(int argc, char **argv)
 {
@@ -40,19 +40,18 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   // Create a new NodeExample object.
-  NodeCore *node_core = new NodeCore();
+  LocomotionModule *locomotion_module = new LocomotionModule();
 
   // Set up a dynamic reconfigure server.
   // Do this before parameter server, else some of the parameter server
   // values can be overwritten.
-  dynamic_reconfigure::Server<node_core::nodeCoreConfig> dr_srv;
-  dynamic_reconfigure::Server<node_core::nodeCoreConfig>::CallbackType cb;
-  cb = boost::bind(&NodeCore::configCallback, node_core, _1, _2);
+  dynamic_reconfigure::Server<locomotion_module::locomotionModuleConfig> dr_srv;
+  dynamic_reconfigure::Server<locomotion_module::locomotionModuleConfig>::CallbackType cb;
+  cb = boost::bind(&LocomotionModule::configCallback, locomotion_module, _1, _2);
   dr_srv.setCallback(cb);
 
   // Declare variables that can be modified by launch file or command line.
-  geometry_msgs::Twist in_msg;
-  float r;
+  
   // Initialize node parameters from launch file or command line.
   // Use a private node handle so that multiple instances of the node can be run simultaneously
   // while using different parameters.
@@ -61,17 +60,16 @@ int main(int argc, char **argv)
  
   // Create a publisher and name the topic.
   //use floats
-  ros::Publisher pub_message_left = nh.advertise<std::float32>("velLeft", 10);
-  ros::Publisher pub_message_right = nh.advertise<std::float32>("velRight", 10);
-
+  locomotion_module->pub_left = nh.advertise<std_msgs::float32>("velLeft", 10);
+  locomotion_module->pub_right = nh.advertise<std_msgs::float32>("velRight", 10);
+  
+  ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
  
   // Main loop.
   while (nh.ok())
   {
     // Publish the message. Do this in the callback for subscribing? 
-    node_core->publishMessage(&pub_message_left,0);
-    node_core->publishMessage(&pub_message_right,1);
-
+    
     ros::spinOnce();
     r.sleep();
   }

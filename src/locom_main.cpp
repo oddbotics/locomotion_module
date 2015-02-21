@@ -31,7 +31,7 @@
  *
  */
 
-#include "locomotion_module.h"
+#include "locomotion_module/locomotion_module.h"
 
 int main(int argc, char **argv)
 {
@@ -55,13 +55,13 @@ int main(int argc, char **argv)
   // Initialize node parameters from launch file or command line.
   // Use a private node handle so that multiple instances of the node can be run simultaneously
   // while using different parameters.
-  ros::NodeHandle pnh("~");
-  pnh.param("r", r, 1);
+  //ros::NodeHandle pnh("~");
+  //pnh.param("r", r_, 1);
  
   // Create a publisher and name the topic.
   //use floats
-  locomotion_module->pub_left = nh.advertise<std_msgs::float32>("velLeft", 10);
-  locomotion_module->pub_right = nh.advertise<std_msgs::float32>("velRight", 10);
+  locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("velLeft", 10);
+  locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("velRight", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
  
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     // Publish the message. Do this in the callback for subscribing? 
     
     ros::spinOnce();
-    r.sleep();
+    //r.sleep();
   }
 
   return 0;

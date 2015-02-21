@@ -41,8 +41,8 @@ class LocomotionModule
   ros::Publisher pub_left;
   ros::Publisher pub_right;
 
-  std_msgs::float32 velLeft_;
-  std_msgs::float32 velRight_;
+  std_msgs::Float32 velLeft_;
+  std_msgs::Float32 velRight_;
 
 };
 

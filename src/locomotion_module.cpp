@@ -28,5 +28,6 @@ void LocomotionModule::messageCallback(const geometry_msgs::Twist::ConstPtr &msg
 void LocomotionModule::configCallback(locomotion_module::locomotionModuleConfig &config, uint32_t level)
 {
   r_ = config.r + r_center_;
+  ROS_INFO("R changed");
 
 }
