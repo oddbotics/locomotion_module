@@ -65,15 +65,15 @@ int main(int argc, char **argv)
   locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("velRight", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
-  ros::spin();
+  //ros::spin();
   // Main loop.
-  // while (nh.ok())
-  // {
+   while (nh.ok())
+   {
   //   // Publish the message. Do this in the callback for subscribing? 
-    
-  //   ros::spinOnce();
+     ROS_INFO("R is %f",locomotion_module->r_);
+     ros::spinOnce();
   //   //r.sleep();
-  // }
+   }
 
   return 0;
 } // end main()
