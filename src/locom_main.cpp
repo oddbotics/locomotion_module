@@ -72,7 +72,7 @@ int main(int argc, char **argv)
    {
   //   // Publish the message. Do this in the callback for subscribing? 
      ROS_INFO("R is %f",locomotion_module->r_);
-     nh.getParamCached("r",r_temp);
+     nh.getParamCached("r",&r_temp);
      ROS_INFO("r param is %f",r_temp);
      ros::spinOnce();
   //   //r.sleep();
