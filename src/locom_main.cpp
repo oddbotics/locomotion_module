@@ -58,6 +58,7 @@ int main(int argc, char **argv)
   ros::NodeHandle pnh("~");
   pnh.param("r", locomotion_module->r_, .1);
  
+  ros::ROS_INFO("r %d",locomotion_module->r_);
   // Create a publisher and name the topic.
   //use floats
   locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("velLeft", 10);
