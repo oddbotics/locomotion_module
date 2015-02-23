@@ -55,8 +55,8 @@ int main(int argc, char **argv)
   // Initialize node parameters from launch file or command line.
   // Use a private node handle so that multiple instances of the node can be run simultaneously
   // while using different parameters.
-  ros::NodeHandle pnh("~");
-  pnh.param("r", locomotion_module->r_, .1);
+  //ros::NodeHandle pnh("~");
+  //pnh.param("r", locomotion_module->r_, .1);
  
   ROS_INFO("r %f",locomotion_module->r_);
   // Create a publisher and name the topic.
