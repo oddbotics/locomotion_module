@@ -67,10 +67,13 @@ int main(int argc, char **argv)
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
   //ros::spin();
   // Main loop.
-   while (nh.ok())
+  double r_temp;
+  while (nh.ok())
    {
   //   // Publish the message. Do this in the callback for subscribing? 
      ROS_INFO("R is %f",locomotion_module->r_);
+     nh.getParamCached("r",r_temp);
+     ROS_INFO("r param is %f",r_temp);
      ros::spinOnce();
   //   //r.sleep();
    }
