@@ -36,7 +36,7 @@
 int main(int argc, char **argv)
 {
   // Set up ROS.
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "locom");
   ros::NodeHandle nh;
 
   // Create a new NodeExample object.
@@ -55,8 +55,8 @@ int main(int argc, char **argv)
   // Initialize node parameters from launch file or command line.
   // Use a private node handle so that multiple instances of the node can be run simultaneously
   // while using different parameters.
-  //ros::NodeHandle pnh("~");
-  //pnh.param("r", r_, 1);
+  ros::NodeHandle pnh("~");
+  pnh.param("r", locomotion_module->r_, .1);
  
   // Create a publisher and name the topic.
   //use floats
