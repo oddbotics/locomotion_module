@@ -33,7 +33,7 @@ class LocomotionModule
 
   void messageCallback(const geometry_msgs::Twist::ConstPtr &msg);
 
-  double r_ = .2;
+  double r_ = .5;
   double r_center_ = .1;
 
   geometry_msgs::Twist incoming_msg;
