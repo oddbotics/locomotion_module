@@ -64,7 +64,8 @@ int main(int argc, char **argv)
   locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("velLeft", 10);
   locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("velRight", 10);
   
-  ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
+  ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
+
   //ros::spin();
   // Main loop.
   double r_temp;
