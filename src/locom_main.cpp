@@ -69,8 +69,8 @@ int main(int argc, char **argv)
   //ros::spin();
   // Main loop.
   double r_temp;
-  double r_left;
-  double r_right;	
+  double r_left = 0.0;
+  double r_right = 0.0;	
   while (nh.ok())
    {
   //   // Publish the message. Do this in the callback for subscribing? 
