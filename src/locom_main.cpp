@@ -61,8 +61,8 @@ int main(int argc, char **argv)
   ROS_INFO("r %f",locomotion_module->r_);
   // Create a publisher and name the topic.
   //use floats
-  locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("velLeft", 10);
-  locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("velRight", 10);
+  locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("/object_3/motor/cmd", 10);
+  locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("object_4/motor/cmd", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
 

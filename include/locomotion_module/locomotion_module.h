@@ -14,6 +14,7 @@
 #include "geometry_msgs/Twist.h"
 #include "tf/transform_broadcaster.h"
 #include "nav_msgs/Odometry.h"
+#incldue "oddbot_msgs/MotorCommand.h"
 
 // Dynamic reconfigure includes.
 #include <dynamic_reconfigure/server.h>
@@ -56,8 +57,10 @@ class LocomotionModule
   double y;
   double th;
 
-  std_msgs::Float32 velLeft_;
-  std_msgs::Float32 velRight_;
+  oddbot_msgs::MotorCommand velLeft_;
+  oddbot_msgs::MotorCommand velRigth_;
+  //std_msgs::Float32 velLeft_;
+  //std_msgs::Float32 velRight_;
 
   ros::Time current_time, last_time;
   

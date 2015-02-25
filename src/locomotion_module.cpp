@@ -18,8 +18,8 @@ void LocomotionModule::publishMessage(ros::Publisher *pub_message, int side)
 void LocomotionModule::velMessageCallback(const geometry_msgs::Twist::ConstPtr &msg)
 {
   //translate twist into left and right velocities
-  velLeft_.data = msg->linear.x + msg->angular.z*r_; 
-  velRight_.data = msg->linear.x - msg->angular.z*r_;
+  velLeft_.motor_vel = msg->linear.x + msg->angular.z*r_; 
+  velRight_.motor_vel = msg->linear.x - msg->angular.z*r_;
   //publish to left and right topics
   pub_left.publish(velLeft_);
   pub_right.publish(velRight_);
