@@ -61,14 +61,16 @@ int main(int argc, char **argv)
   ROS_INFO("r %f",locomotion_module->r_);
   // Create a publisher and name the topic.
   //use floats
-  locomotion_module->pub_left = nh.advertise<std_msgs::Float32>("/object_3/motor/command", 10);
-  locomotion_module->pub_right = nh.advertise<std_msgs::Float32>("/object_4/motor/command", 10);
+  locomotion_module->pub_left = nh.advertise<oddbot_msgs::MotorCommand>("/object_3/motor/command", 10);
+  locomotion_module->pub_right = nh.advertise<oddbot_msgs::MotorCommand>("/object_4/motor/command", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
 
   //ros::spin();
   // Main loop.
   double r_temp;
+  double r_left;
+  double r_right;	
   while (nh.ok())
    {
   //   // Publish the message. Do this in the callback for subscribing? 
