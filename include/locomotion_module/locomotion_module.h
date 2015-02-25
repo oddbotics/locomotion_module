@@ -40,7 +40,8 @@ class LocomotionModule
 
   double r_ = .5;
   double r_center_ = .1;
-
+  double r_right_;
+  double r_left_;
   geometry_msgs::Twist incoming_msg;
   
   ros::Publisher pub_left;
