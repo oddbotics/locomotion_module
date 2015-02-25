@@ -23,6 +23,7 @@ void LocomotionModule::velMessageCallback(const geometry_msgs::Twist::ConstPtr &
   //publish to left and right topics
   pub_left.publish(velLeft_);
   pub_right.publish(velRight_);
+  ROS_INFO("r_left: %f :: r_right: %f",r_left_,r_right_);
 }
 
 void LocomotionModule::odomMessageCallback(const geometry_msgs::Twist::ConstPtr &msg)
@@ -86,6 +87,6 @@ void LocomotionModule::odomMessageCallback(const geometry_msgs::Twist::ConstPtr 
 void LocomotionModule::configCallback(locomotion_module::locomotionModuleConfig &config, uint32_t level)
 {
   r_ = config.r + r_center_;
-  ROS_INFO("R changed %f",r_);
+ // ROS_INFO("R changed %f",r_);
 
 }
