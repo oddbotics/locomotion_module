@@ -14,7 +14,7 @@
 #include "geometry_msgs/Twist.h"
 #include "tf/transform_broadcaster.h"
 #include "nav_msgs/Odometry.h"
-#incldue "oddbot_msgs/MotorCommand.h"
+#include "oddbot_msgs/MotorCommand.h"
 
 // Dynamic reconfigure includes.
 #include <dynamic_reconfigure/server.h>
