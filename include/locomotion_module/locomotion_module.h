@@ -58,7 +58,7 @@ class LocomotionModule
   double th;
 
   oddbot_msgs::MotorCommand velLeft_;
-  oddbot_msgs::MotorCommand velRigth_;
+  oddbot_msgs::MotorCommand velRight_;
   //std_msgs::Float32 velLeft_;
   //std_msgs::Float32 velRight_;
 
