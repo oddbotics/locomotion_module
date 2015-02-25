@@ -68,9 +68,9 @@ void LocomotionModule::odomMessageCallback(const geometry_msgs::Twist::ConstPtr 
 
     //set the velocity
     odom.child_frame_id = "base_link";
-    odom.twist.twist.linear.x = vx;
-    odom.twist.twist.linear.y = vy;
-    odom.twist.twist.angular.z = vth;
+    odom.twist.twist.linear.x = msg->linear.x;
+    odom.twist.twist.linear.y = msg->linear.y;
+    odom.twist.twist.angular.z = msg->angular.z;
 
     //publish the message
     odom_pub.publish(odom);
