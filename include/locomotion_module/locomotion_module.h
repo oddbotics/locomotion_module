@@ -46,7 +46,7 @@ class LocomotionModule
   ros::Publisher pub_right;
 
   ros::Publisher odom_pub;
-  tf::TransformBroadcaster odom_broadcaster;
+  //tf::TransformBroadcaster odom_broadcaster;
   double dt;
   double delta_x;
   double delta_y;
