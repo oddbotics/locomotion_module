@@ -63,6 +63,8 @@ int main(int argc, char **argv)
   //use floats
   locomotion_module->pub_left = nh.advertise<oddbot_msgs::MotorCommand>("/object_3/motor/command", 10);
   locomotion_module->pub_right = nh.advertise<oddbot_msgs::MotorCommand>("/object_4/motor/command", 10);
+
+  locomotion_module->odom_trans = nh.advertise<geometry_msgs::Twist>("/odom_translated", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
 

@@ -26,6 +26,29 @@ void LocomotionModule::velMessageCallback(const geometry_msgs::Twist::ConstPtr &
   ROS_INFO("r_left: %f :: r_right: %f",r_left_,r_right_);
 }
 
+void LocomotionModule::odomUpdateCallback(const std_msgs::Float32::ConstPtr &msg)
+{
+  //might have to change this if the two motors don't publish enough
+  //right now this assumes that listening for one is enough
+  receivedLeftVel_ = msg->data;
+
+
+}
+
+void LocomotionModule::odomTranslationCallback(const std_msgs::Float32::ConstPtr &msg)
+{
+  //might have to change this if the two motors don't publish enough
+  //right now this assumes that listening for one is enough
+  //and that both will be updating at about the same time
+  receivedRightVel_ = msg->data;
+  double combinedVel = receivedRightVel_ + receivedLeftVel;
+  geometry_msgs::Twist odom_translated;
+  odom_translated.linear.x = combinedVel/2;
+  odom_translated.angular.z = receivedRightVel_ - combinedVel/2;
+  odom_trans.publish(odom_translated);
+
+}
+
 void LocomotionModule::odomMessageCallback(const geometry_msgs::Twist::ConstPtr &msg)
 {
   current_time = ros::Time::now();
