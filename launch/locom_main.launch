@@ -1,0 +1,10 @@
+<!-- Starts up everything needed to run the example listener/talker nodes. -->
+<launch>
+  <!-- The talker node will publish a custom message. -->
+  <node pkg="locomotion_module" type="locom_main" name="locom_main">
+    <param name="r" value=".15"/>
+    
+    <remap from="example" to="chatter"/>
+  </node>
+
+</launch>

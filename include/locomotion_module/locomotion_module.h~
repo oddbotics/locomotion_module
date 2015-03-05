@@ -1,0 +1,7 @@
+/**
+ * node class for locomotion module
+
+ */
+
+#ifndef LOCOMOTION_MODULE_H
+#define LOCOMOTION_MODULE_H
