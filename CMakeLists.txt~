@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   genmsg
   oddbot_msgs
-  oddbot_lib
   dynamic_reconfigure
 )
 
@@ -112,7 +111,7 @@ include_directories(include
 # )
 
 ## Declare a cpp executable
-add_executable(locom_main src/locom_main.cpp)
+add_executable(locom_main src/locom_main.cpp src/locomotion_module.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

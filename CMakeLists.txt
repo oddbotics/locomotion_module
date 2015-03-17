@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   genmsg
   oddbot_msgs
-  oddbot_lib
   dynamic_reconfigure
 )
 
@@ -123,6 +122,8 @@ add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
 target_link_libraries(locom_main
   ${catkin_LIBRARIES}
 )
+
+set_target_properties(locom_main PROPERTIES COMPILE_FLAGS -std=c++11)
 
 #############
 ## Install ##

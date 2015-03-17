@@ -18,8 +18,8 @@ void LocomotionModule::publishMessage(ros::Publisher *pub_message, int side)
 void LocomotionModule::velMessageCallback(const geometry_msgs::Twist::ConstPtr &msg)
 {
   //translate twist into left and right velocities
-  velLeft_.motor_vel = msg->linear.x + msg->angular.z*r_left_; 
-  velRight_.motor_vel = msg->linear.x - msg->angular.z*r_right_;
+  velLeft_.desired = msg->linear.x + msg->angular.z*r_left_; 
+  velRight_.desired = msg->linear.x - msg->angular.z*r_right_;
   //publish to left and right topics
   pub_left.publish(velLeft_);
   pub_right.publish(velRight_);
@@ -41,7 +41,7 @@ void LocomotionModule::odomTranslationCallback(const std_msgs::Float32::ConstPtr
   //right now this assumes that listening for one is enough
   //and that both will be updating at about the same time
   receivedRightVel_ = msg->data;
-  double combinedVel = receivedRightVel_ + receivedLeftVel;
+  double combinedVel = receivedRightVel_ + receivedLeftVel_;
   geometry_msgs::Twist odom_translated;
   odom_translated.linear.x = combinedVel/2;
   odom_translated.angular.z = receivedRightVel_ - combinedVel/2;
