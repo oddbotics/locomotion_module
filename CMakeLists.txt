@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   genmsg
   oddbot_msgs
   dynamic_reconfigure
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -112,6 +113,7 @@ include_directories(include
 
 ## Declare a cpp executable
 add_executable(locom_main src/locom_main.cpp src/locomotion_module.cpp)
+add_executable(locom_odom src/locom_odom.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -120,6 +122,10 @@ add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(locom_main
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(locom_odom
   ${catkin_LIBRARIES}
 )
 

@@ -61,18 +61,22 @@ int main(int argc, char **argv)
 //  ROS_INFO("r %f",locomotion_module->r_);
   // Create a publisher and name the topic.
   //use floats
-  locomotion_module->pub_left = nh.advertise<oddbot_msgs::MotorCommand>("/object_3/motor/command", 10);
-  locomotion_module->pub_right = nh.advertise<oddbot_msgs::MotorCommand>("/object_4/motor/command", 10);
+  locomotion_module->pub_left = nh.advertise<oddbot_msgs::ActuationCommand>("/object_3/motor/command", 10);
+  locomotion_module->pub_right = nh.advertise<oddbot_msgs::ActuationCommand>("/object_4/motor/command", 10);
 
   locomotion_module->odom_trans = nh.advertise<geometry_msgs::Twist>("/odom_translated", 10);
   
   ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
+  ros::Subscriber left_motor_sub = nh.subscribe("/object_3/motor/feedback", 1000, &LocomotionModule::updateLeftVelocities, locomotion_module); 
+  ros::Subscriber right_motor_sub = nh.subscribe("/object_4/motor/feedback", 1000, &LocomotionModule::updateRightVelocities, locomotion_module);
 
   //ros::spin();
   // Main loop.
   double r_temp;
   double r_left = 0.0;
   double r_right = 0.0;	
+
+  ros::Rate loop_rate(30);
   while (nh.ok())
    {
   //   // Publish the message. Do this in the callback for subscribing? 
@@ -83,8 +87,9 @@ int main(int argc, char **argv)
      locomotion_module->r_left_ = r_left + locomotion_module->r_center_;
 
      //ROS_INFO("r param is %f",r_temp);
+     locomotion_module->publishOdomTranslationCallback();
      ros::spinOnce();
-  //   //r.sleep();
+     loop_rate.sleep();
    }
 
   return 0;

@@ -14,8 +14,10 @@
 #include "geometry_msgs/Twist.h"
 #include "tf/transform_broadcaster.h"
 #include "nav_msgs/Odometry.h"
-#include "oddbot_msgs/MotorCommand.h"
+#include "oddbot_msgs/ActuationCommand.h"
+#include "oddbot_msgs/ActuationFeedback.h"
 #include <cmath> 
+#include <string>
 
 // Dynamic reconfigure includes.
 #include <dynamic_reconfigure/server.h>
@@ -43,6 +45,13 @@ class LocomotionModule
 
   void odomMessageCallback(const geometry_msgs::Twist::ConstPtr &msg);
 
+  void updateVelocities(const oddbot_msgs::ActuationFeedback::ConstPtr &msg, double * motorVel);
+
+  void updateLeftVelocities(const oddbot_msgs::ActuationFeedback::ConstPtr &msg);
+  void updateRightVelocities(const oddbot_msgs::ActuationFeedback::ConstPtr &msg);
+
+  void publishOdomTranslationCallback();
+
   double r_ = .5;
   double r_center_ = .1;
   double r_right_;
@@ -67,8 +76,8 @@ class LocomotionModule
   double receivedLeftVel_;
   double receivedRightVel_;
 
-  oddbot_msgs::MotorCommand velLeft_;
-  oddbot_msgs::MotorCommand velRight_;
+  oddbot_msgs::ActuationCommand velLeft_;
+  oddbot_msgs::ActuationCommand velRight_;
   //std_msgs::Float32 velLeft_;
   //std_msgs::Float32 velRight_;
 
