@@ -138,6 +138,7 @@ target_link_libraries(locom_tf
 
 set_target_properties(locom_module PROPERTIES COMPILE_FLAGS -std=c++11)
 set_target_properties(locom_tf PROPERTIES COMPILE_FLAGS -std=c++11)
+set_target_properties(locomotion_module_lib PROPERTIES COMPILE_FLAGS -std=c++11)
 
 #############
 ## Install ##

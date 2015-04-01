@@ -4,7 +4,7 @@ DCMotor::DCMotor(int location) : Module(location){
 	
 	ros::NodeHandle nh;
 
-	frame = std::string("dc_motor_" + std::string(location + "/wheel"));
+	frame = std::string("dc_motor_" + std::string(std::to_string(location) + "/wheel"));
 	
 	try{
 		listener.lookupTransform(this->frame, "/base_link",  
@@ -18,8 +18,8 @@ DCMotor::DCMotor(int location) : Module(location){
 	} catch (tf::TransformException ex){
 	}
 	
-	std::string feedback("/connector_" + std::string(location + "dc_motor/feedback"));
-	std::string command("/connector_" + std::string(location + "dc_motor/command"));
+	std::string feedback("/connector_" + std::string(std::to_string(location) + "dc_motor/feedback"));
+	std::string command("/connector_" + std::string(std::to_string(location) + "dc_motor/command"));
 	
 	cmd_pub = nh.advertise<oddbot_msgs::ActuationCommand>(feedback, 1000);
 	fdbk_sub = nh.subscribe(command, 1000, &DCMotor::motorCallback, this);
