@@ -25,7 +25,7 @@ int main(int argc, char** argv){
 
   ros::NodeHandle n;
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("/odom", 50);
-  ros::Subscriber odom_sub = n.subscribe("/odom_translated",1000,updateVels);
+  ros::Subscriber odom_sub = n.subscribe("/robot_vel",1000,updateVels);
   tf::TransformBroadcaster odom_broadcaster;
 
   ros::Time current_time, last_time;

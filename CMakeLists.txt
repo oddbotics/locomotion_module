@@ -74,9 +74,9 @@ find_package(catkin REQUIRED COMPONENTS
 #  std_msgs
 #)
 
-generate_dynamic_reconfigure_options(
-	cfg/locomotionModule.cfg
-)
+# generate_dynamic_reconfigure_options(
+# 	cfg/locomotionModule.cfg
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -106,7 +106,7 @@ include_directories(include
 )
 
 ## Declare a cpp library
-add_library(locom_lib
+add_library(locomotion_module_lib
   src/Modules/DCMotor.cpp
 )
 
@@ -118,23 +118,26 @@ add_executable(locom_tf src/locom_tf.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(oddbot_boot_node oddbot_boot_generate_messages_cpp)
-add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
+# add_dependencies(locom_module ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(locom_main
+target_link_libraries(locom_module
   ${catkin_LIBRARIES}
-  locom_lib
+  locomotion_module_lib
 )
 
 target_link_libraries(locom_odom
   ${catkin_LIBRARIES}
-  locom_lib
+  locomotion_module_lib
 )
 
 target_link_libraries(locom_tf
   ${catkin_LIBRARIES}
-  locom_lib
+  locomotion_module_lib
 )
+
+set_target_properties(locom_module PROPERTIES COMPILE_FLAGS -std=c++11)
+set_target_properties(locom_tf PROPERTIES COMPILE_FLAGS -std=c++11)
 
 #############
 ## Install ##

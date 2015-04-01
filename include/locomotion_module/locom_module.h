@@ -18,6 +18,8 @@
 #include "oddbot_msgs/ActuationFeedback.h"
 #include <cmath> 
 #include <string>
+#include "locomotion_module/Modules/DCMotor.h"
+#include "locomotion_module/Modules/Module.h"
 
 // Dynamic reconfigure includes.
 #include <dynamic_reconfigure/server.h>
@@ -30,7 +32,8 @@ class LocomotionModule
   public:
    LocomotionModule();
    ~LocomotionModule();
-   void LocomotionModule::findActiveModules(){
+   void findActiveModules();
+   void updateCurrentRobotVelocity();   
 
   protected:
   
@@ -38,8 +41,8 @@ class LocomotionModule
     void updateOdometry(void);
     
     int num_connections;
-    std::vector<int> connector_num
-    std::vector<DCMotor> actuation;
+    std::vector<int> connector_num;
+    std::vector<DCMotor*> actuation;
     std::vector<bool> active_ports;
     //std::vector<Module> module_list; 
     

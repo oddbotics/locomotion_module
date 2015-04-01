@@ -4,14 +4,13 @@
 class Module 
 {
   public:
-    Module(int port, std::sting type): port(port) {}
-    std::string getPort(){return this->port;}
-    void setLocation(std::string port){this->port = port;}
+    Module(int port): port(port) {}
+    int getPort(){return this->port;}
     virtual std::string getType() = 0; 
 
   protected:
     
-    std::string port; 
+    int port; 
 
 };
 
