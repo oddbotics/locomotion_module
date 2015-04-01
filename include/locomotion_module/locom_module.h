@@ -3,10 +3,10 @@
 
  */
 
-#ifndef LOCOMOTION_MODULE_H
-#define LOCOMOTION_MODULE_H
+#ifndef LOCOM_MODULE_H
+#define LOCOM_MODULE_H
 
-
+ 
 // ROS includes.
 #include "ros/ros.h"
 #include "ros/time.h"
@@ -30,18 +30,21 @@ class LocomotionModule
   public:
    LocomotionModule();
    ~LocomotionModule();
+   void LocomotionModule::findActiveModules(){
 
   protected:
   
     void updateDesiredVelocity(const geometry_msgs::Twist::ConstPtr &msg);
     void updateOdometry(void);
     
-    std::vector<Module> module_list; //callback classes for the motor and the corresponding subscriber
-    ros::Publisher cur_robot_vel_pub;
+    int num_connections;
+    std::vector<int> connector_num
+    std::vector<DCMotor> actuation;
+    std::vector<bool> active_ports;
+    //std::vector<Module> module_list; 
+    
+    ros::Publisher robot_vel_pub;
     ros::Subscriber cmd_vel_sub;
 };
 
-#endif // LOCOMOTION_MODULE_H
-
-//transform for motors
-//base_link -> /position/wheel (only look at y axis)
+#endif // LOCOM_MODULE_H

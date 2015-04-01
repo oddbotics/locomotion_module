@@ -106,14 +106,14 @@ include_directories(include
 )
 
 ## Declare a cpp library
-# add_library(oddbot_lib
-#   src/${PROJECT_NAME}/get_subnet.cpp
-#   src/${PROJECT_NAME}/Serial.cpp
-# )
+add_library(locom_lib
+  src/Modules/DCMotor.cpp
+)
 
 ## Declare a cpp executable
-add_executable(locom_main src/locom_main.cpp src/locomotion_module.cpp)
+add_executable(locom_module src/locom_module.cpp)
 add_executable(locom_odom src/locom_odom.cpp)
+add_executable(locom_tf src/locom_tf.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -123,13 +123,18 @@ add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(locom_main
   ${catkin_LIBRARIES}
+  locom_lib
 )
 
 target_link_libraries(locom_odom
   ${catkin_LIBRARIES}
+  locom_lib
 )
 
-set_target_properties(locom_main PROPERTIES COMPILE_FLAGS -std=c++11)
+target_link_libraries(locom_tf
+  ${catkin_LIBRARIES}
+  locom_lib
+)
 
 #############
 ## Install ##

@@ -1,0 +1,28 @@
+/* 
+ * a class to hold the motor objects  
+ */
+
+#ifndef MOTOR_H
+#define MOTOR_H
+
+class MotorCallback 
+{
+  public:
+    void operator()(const oddbot_msgs::ActuationFeedback::ConstPtr &msg){
+      for(int i = 0; i < msg->item.size(); i++){
+        if(msg->item[i].compare("cur_vel_mps") == 0){
+          *motorVel = msg->value[i];
+          return;
+        }
+      }
+    }
+    double getVelocity(){return this->motor_vel_mps;}
+
+  private:
+    double motor_vel_mps;
+  
+};
+
+#endif // MOTOR_H
+
+
