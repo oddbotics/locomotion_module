@@ -1,2 +1,2 @@
 num_connections: 4
-connector_num: [2 3 4 5];
+connector_num: [2, 3, 4, 5]

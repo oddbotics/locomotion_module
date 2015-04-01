@@ -13,7 +13,7 @@ LocomotionModule::LocomotionModule(){
 	robot_vel_pub = nh.advertise<geometry_msgs::Twist>("/robot_vel", 1000);
 	cmd_vel_sub = nh.subscribe("/cmd_vel", 1000, &LocomotionModule::updateDesiredVelocity, this);
 	
-	for(int i = 1; i <= this->num_connections; i++){
+	for(int i = 0; i < this->num_connections; i++){
 	  active_ports.push_back(false);
   }
 }
@@ -27,7 +27,7 @@ LocomotionModule::~LocomotionModule(){
 //increment all of the locations and determine if they are active
 void LocomotionModule::findActiveModules(){
   //increment through all connections
-  for(int i = 1; i <= this->num_connections; i++){
+  for(int i = 0; i < this->num_connections; i++){
     //see if it has been plugged in 
     std::string loc("/connector_" + this->connector_num[i]);
     std::string key;

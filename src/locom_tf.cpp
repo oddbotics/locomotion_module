@@ -13,8 +13,8 @@ int main(int argc, char** argv){
   double roll,pitch,yaw, foot_r, foot_p, foot_yaw,c1_r,c1_p,c1_yaw;
   int num_connections;
 
-  std::vector<tf::Vector3> positions;
-  std::vector<tf::Quaternion> orientations;
+  std::vector<double> pos_x,pos_y,pos_z;
+  std::vector<double> r,p,ya;
   std::vector<std::string> locations;
   std::vector<int> connector_num;  
   
@@ -22,37 +22,40 @@ int main(int argc, char** argv){
 
   //read in a private node handle to determine frame
   ros::NodeHandle private_node_handle_("~");
-  private_node_handle_.param<double>("/footprint/x", foot_x, 0.0);
-  private_node_handle_.param<double>("/footprint/y", foot_y, 0.0);
-  private_node_handle_.param<double>("/footprint/z", foot_z, 0.0);
-  private_node_handle_.param<double>("/footprint/roll", foot_r, 0.0);
-  private_node_handle_.param<double>("/footprint/pitch", foot_p, 0.0);
-  private_node_handle_.param<double>("/footprint/yaw", foot_yaw, 0.0);
-  private_node_handle_.param<double>("/connector_1/x", c1_x, 0.0);
-  private_node_handle_.param<double>("/connector_1/y", c1_y, 0.0);
-  private_node_handle_.param<double>("/connector_1/z", c1_z, 0.0);
-  private_node_handle_.param<double>("/connector_1/roll", c1_r, 0.0);
-  private_node_handle_.param<double>("/connector_1/pitch", c1_p, 0.0);
-  private_node_handle_.param<double>("/connector_1/yaw", c1_yaw, 0.0);
+  private_node_handle_.param<double>("footprint/x", foot_x, 0.0);
+  private_node_handle_.param<double>("footprint/y", foot_y, 0.0);
+  private_node_handle_.param<double>("footprint/z", foot_z, 0.0);
+  private_node_handle_.param<double>("footprint/roll", foot_r, 0.0);
+  private_node_handle_.param<double>("footprint/pitch", foot_p, 0.0);
+  private_node_handle_.param<double>("footprint/yaw", foot_yaw, 0.0);
+  private_node_handle_.param<double>("connector_1/x", c1_x, 0.0);
+  private_node_handle_.param<double>("connector_1/y", c1_y, 0.0);
+  private_node_handle_.param<double>("connector_1/z", c1_z, 0.0);
+  private_node_handle_.param<double>("connector_1/roll", c1_r, 0.0);
+  private_node_handle_.param<double>("connector_1/pitch", c1_p, 0.0);
+  private_node_handle_.param<double>("connector_1/yaw", c1_yaw, 0.0);
   private_node_handle_.param<int>("number_connections", num_connections, 4);  
+
   private_node_handle_.param<std::vector<int>>("connector_nums", connector_num, {2, 3, 4, 5});
 
-  for(int i = 1; i <= num_connections; i++){
-	  std::string connector("connector_" + connector_num[i]);  
-	  ros::NodeHandle private_node_handle_("~/connection_"+i);
-	  private_node_handle_.param<double>("x", x, 0.0);
-	  private_node_handle_.param<double>("y", y, 0.0);
-	  private_node_handle_.param<double>("z", z, 0.0);
-	  private_node_handle_.param<double>("roll", roll, 0.0);
-	  private_node_handle_.param<double>("pitch", pitch, 0.0);
-	  private_node_handle_.param<double>("yaw", yaw, 0.0);
-	
-	  tf::Vector3 vect(x, y, z);
-	  tf::Quaternion quat;
-	  quat.setRPY(roll, pitch, yaw);
-
-	  positions.push_back(vect);
-    	  orientations.push_back(quat);	
+  for(int i = 0; i < num_connections; i++){
+	  std::string connector("connector_" +std::to_string(connector_num[i]));  
+	  ROS_INFO("GETTING %s",connector.c_str());
+	  ros::NodeHandle private_node_handle_("~");
+	  private_node_handle_.param<double>(connector+"/x", x, 0.0);
+	  private_node_handle_.param<double>(connector+"/y", y, 0.0);
+	  private_node_handle_.param<double>(connector+"/z", z, 0.0);
+	  private_node_handle_.param<double>(connector+"/roll", roll, 0.0);
+	  private_node_handle_.param<double>(connector+"/pitch", pitch, 0.0);
+	  private_node_handle_.param<double>(connector+"/yaw", yaw, 0.0);
+		
+	  ROS_INFO("(%f,%f,%f) :: (%f,%f,%f)",x,y,z,roll,pitch,yaw);	
+	  pos_x.push_back(x);
+	  pos_y.push_back(y);
+	  pos_z.push_back(z);
+	  r.push_back(roll);
+	  p.push_back(pitch);
+	  ya.push_back(yaw);
 	  locations.push_back(connector);
   }
 
@@ -68,8 +71,10 @@ int main(int argc, char** argv){
   while (node.ok()){
     //publish base_link to all of the connectors
     for(int i = 0; i < locations.size(); i++){
-      transform.setOrigin( positions[i]  );
-      transform.setRotation( orientations[i] );
+      transform.setOrigin(tf::Vector3(pos_x[i],pos_y[i],pos_z[i]));
+      tf::Quaternion quat;
+      quat.setRPY(r[i],p[i],ya[i]);
+      transform.setRotation(quat);
       br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link" ,locations[i]));
     }    
 
@@ -78,8 +83,8 @@ int main(int argc, char** argv){
     transform.setRotation( foot_quat );
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_footprint" , "base_link"));
     //publish base_link to the top connector 1
-    transform.setOrigin(foot_pos);
-    transform.setRotation( foot_quat );
+    transform.setOrigin(c1_pos);
+    transform.setRotation( c1_quat );
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link" , "connector_1"));
     rate.sleep();
   }

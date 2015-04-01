@@ -1,0 +1,15 @@
+<launch>
+  
+
+  <node pkg="locomotion_module" type="locom_module" name="locom_module" output="screen">
+    <rosparam file="$(find locomotion_module)/config/config.yaml" command="load"/>
+  </node>
+
+  <node pkg="locomotion_module" type="locom_odom" name="locom_odom" output="screen"/>
+
+  <node pkg="locomotion_module" type="locom_tf" name="locom_tf" output = "screen">
+    <rosparam file="$(find locomotion_module)/config/config.yaml" command="load"/>
+    <rosparam file="$(find locomotion_module)/config/tf.yaml" command="load"/>
+  </node>
+
+</launch>
