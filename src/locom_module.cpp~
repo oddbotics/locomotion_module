@@ -1,4 +1,4 @@
-#include "locomotion_module/locom_module.cpp"
+#include "locomotion_module/locom_module.h"
 
 LocomotionModule::LocomotionModule(){
   	//the main node handle
@@ -6,38 +6,44 @@ LocomotionModule::LocomotionModule(){
 
 	//grab the parameters
 	ros::NodeHandle private_node_handle_("~");
-	private_node_handle_.param<double>("num_connections", num_connections, 4);
-	private_node_handle_.param<double>("connector_nums", connector_num, [1 2 3 4]);
+	private_node_handle_.param<int>("num_connections", num_connections, 4);
+	private_node_handle_.param<std::vector<int>>("connector_nums", connector_num, {2, 3, 4, 5});
 	
 	//set up the publishers and the subscribers
-	robot_vel_pub = nh.advertise<geometry_msgs::Twist>(feedback, 1000);
-	cmd_vel_sub = nh.subscribe(command, 1000, &LocomotionModule::updateDesiredVelocity, this);
+	robot_vel_pub = nh.advertise<geometry_msgs::Twist>("/robot_vel", 1000);
+	cmd_vel_sub = nh.subscribe("/cmd_vel", 1000, &LocomotionModule::updateDesiredVelocity, this);
 	
-	for(int i = 1; i <= this->num_connections; i++){
+	for(int i = 0; i < this->num_connections; i++){
 	  active_ports.push_back(false);
+  }
+}
+
+LocomotionModule::~LocomotionModule(){
+  for(int i = 0; i < this->actuation.size(); i++){
+    delete actuation[i];
   }
 }
 
 //increment all of the locations and determine if they are active
 void LocomotionModule::findActiveModules(){
   //increment through all connections
-	for(int i = 1; i <= this->num_connections; i++)
-		//see if it has been plugged in 
-  	std::string loc("/connector_" + this->connector_num[i]);
-  	std::string key;
-	  if (ros::param::search(loc, key) && ~active_ports[i]){
-	    //get the value
-	    std::string val;
-  	  ros::param::get(key, val);
-  	  active_ports[i] = true;
- 	    //see if it is a motor
- 	    if(val.compare("dc_motor") == 0){
- 	      DCMotor motor = DCMotor(this->connector_num[i]);
- 	    	this->actuation.push_back(motor);
- 	    	this->module_list.push_back(motor);
- 	    }
-	  }
-	}
+  for(int i = 0; i < this->num_connections; i++){
+    //see if it has been plugged in 
+    std::string loc("/connector_" + this->connector_num[i]);
+    std::string key;
+    if (ros::param::search(loc, key) && ~active_ports[i]){
+      //get the value
+      std::string val;
+      ros::param::get(key, val);
+      active_ports[i] = true;
+      //see if it is a motor
+      if(val.compare("dc_motor") == 0){
+        DCMotor * motor = new DCMotor(this->connector_num[i]);
+     	this->actuation.push_back(motor);
+//     	this->module_list.push_back(motor);
+      }
+    }
+  }
 }
 
 void LocomotionModule::updateDesiredVelocity(const geometry_msgs::Twist::ConstPtr &msg){
@@ -45,17 +51,17 @@ void LocomotionModule::updateDesiredVelocity(const geometry_msgs::Twist::ConstPt
   //double robot_linear = msg->linear.x;
   //double robot_angular = msg->angular.z;
 
+//  geometry_msgs::Twist des_robot_vel = *msg;
+
   //cycle through each module if it is a motor, calculate the motor desired motor velocity
   for(int i = 0; i < this->actuation.size(); i++){
-  	actuation[i].calculateDesiredVelocity(&msg);
-
+  	actuation[i]->calculateDesiredVelocity(*msg);
   }
   
   //call funtion to publish the desired motor velocities
   for(int i = 0; i < this->actuation.size(); i++){
-  	actuation[i].publishDesiredVelocity();
-  }
-  
+  	actuation[i]->publishDesiredVelocity();
+  } 
 }
 
 void LocomotionModule::updateCurrentRobotVelocity(void){
@@ -63,26 +69,26 @@ void LocomotionModule::updateCurrentRobotVelocity(void){
   //combine them to get the current robot velocity
   double linear = 0.0;
   double angular = 0.0;
-  double num_motors = ((double)this->actuation.size());
+  int num_motors = this->actuation.size();
   
   for(int i = 0; i < num_motors; i++){
-    geometry_msgs::Twist velocity = actuation[i].getVelocity();
+    geometry_msgs::Twist velocity = actuation[i]->getVelocity();
   	linear += velocity.linear.x;
-  	angular += velocity.angular.z
+  	angular += velocity.angular.z;
   }
   
-  linear = linear/num_motors;
-  angular = angular/num_motors;
+  linear = linear/((double)num_motors);
+  angular = angular/((double)num_motors);
   
   // publish the current robot velocity  
   geometry_msgs::Twist robot_vel;
-  odom_translated.linear.x = linear;
-  odom_translated.angular.z = angular;
-  odom_trans.publish(robot_vel);
+  robot_vel.linear.x = linear;
+  robot_vel.angular.z = angular;
+  robot_vel_pub.publish(robot_vel);
 }
 
 
-int main(int argc char * argv[]){
+int main(int argc, char * argv[]){
 
   ros::init(argc, argv, "locomotion_module");
   
