@@ -29,9 +29,11 @@ void LocomotionModule::findActiveModules(){
   //increment through all connections
   for(int i = 0; i < this->num_connections; i++){
     //see if it has been plugged in 
-    std::string loc("/connector_" + std::to_string(this->connector_num[i]));
+    std::string loc("connector_" + std::string(std::to_string(this->connector_num[i]) + "/type"));
+    ROS_INFO("LOOKING FOR %s",loc.c_str());
     std::string key;
     if (ros::param::search(loc, key) && ~active_ports[i]){
+      ROS_INFO("FOUND_IT");
       //get the value
       std::string val;
       ros::param::get(key, val);

@@ -22,9 +22,9 @@
 #include "locomotion_module/Modules/Module.h"
 
 // Dynamic reconfigure includes.
-#include <dynamic_reconfigure/server.h>
+//#include <dynamic_reconfigure/server.h>
 // Auto-generated from cfg/ directory.
-#include <locomotion_module/locomotionModuleConfig.h>
+//#include <locomotion_module/locomotionModuleConfig.h>
 
 
 class LocomotionModule
