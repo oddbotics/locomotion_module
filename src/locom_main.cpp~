@@ -31,12 +31,12 @@
  *
  */
 
-#include "locomotion_module.h"
+#include "locomotion_module/locomotion_module.h"
 
 int main(int argc, char **argv)
 {
   // Set up ROS.
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "locom");
   ros::NodeHandle nh;
 
   // Create a new NodeExample object.
@@ -55,24 +55,42 @@ int main(int argc, char **argv)
   // Initialize node parameters from launch file or command line.
   // Use a private node handle so that multiple instances of the node can be run simultaneously
   // while using different parameters.
-  ros::NodeHandle pnh("~");
-  pnh.param("r", r, 1);
+  //ros::NodeHandle pnh("~");
+  //pnh.param("r", locomotion_module->r_, .1);
  
+//  ROS_INFO("r %f",locomotion_module->r_);
   // Create a publisher and name the topic.
   //use floats
-  locomotion_module->pub_left = nh.advertise<std_msgs::float32>("velLeft", 10);
-  locomotion_module->pub_right = nh.advertise<std_msgs::float32>("velRight", 10);
+  locomotion_module->pub_left = nh.advertise<oddbot_msgs::ActuationCommand>("/object_3/motor/command", 10);
+  locomotion_module->pub_right = nh.advertise<oddbot_msgs::ActuationCommand>("/object_4/motor/command", 10);
+
+  locomotion_module->odom_trans = nh.advertise<geometry_msgs::Twist>("/odom_translated", 10);
   
-  ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::messageCallback, locomotion_module);
- 
+  ros::Subscriber sub_message = nh.subscribe("cmd_vel", 1000, &LocomotionModule::velMessageCallback, locomotion_module);
+  ros::Subscriber left_motor_sub = nh.subscribe("/object_3/motor/feedback", 1000, &LocomotionModule::updateLeftVelocities, locomotion_module); 
+  ros::Subscriber right_motor_sub = nh.subscribe("/object_4/motor/feedback", 1000, &LocomotionModule::updateRightVelocities, locomotion_module);
+
+  //ros::spin();
   // Main loop.
+  double r_temp;
+  double r_left = 0.0;
+  double r_right = 0.0;	
+
+  ros::Rate loop_rate(30);
   while (nh.ok())
-  {
-    // Publish the message. Do this in the callback for subscribing? 
-    
-    ros::spinOnce();
-    r.sleep();
-  }
+   {
+  //   // Publish the message. Do this in the callback for subscribing? 
+     //ROS_INFO("R is %f",locomotion_module->r_);
+     nh.getParamCached("/object_4/motor/dist_m",r_right);
+     locomotion_module->r_right_ = r_right + locomotion_module->r_center_;
+     nh.getParamCached("/object_3/motor/dist_m",r_left);
+     locomotion_module->r_left_ = r_left + locomotion_module->r_center_;
+
+     //ROS_INFO("r param is %f",r_temp);
+     locomotion_module->publishOdomTranslationCallback()
+     ros::spinOnce();
+     loop_rate.sleep();
+   }
 
   return 0;
 } // end main()

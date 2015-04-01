@@ -1,0 +1,27 @@
+#ifndef MOTOR_H_
+#define MOTOR_H_
+
+class Motor : public Module 
+{
+  public:
+    Motor(std::string location);
+    double getVelocity(){return this->motor_vel_mps;}
+    std::string getType(){return "Motor";} 
+    //function to publish 
+
+  private:
+
+    motorCallback(const oddbot_msgs::ActuationFeedback::ConstPtr& msg);
+    calculateDesiredVelocity(double robot_linear, double robot_angular);    
+
+    double motor_vel_mps;
+    double des_motor_vel_mps;
+    tf::TransformListener listener;
+    ros::Publisher cmd_pub;
+    ros::Subscriber fdbk_sub; 
+
+    //TF
+    
+};
+
+#endif // MOTOR_H_

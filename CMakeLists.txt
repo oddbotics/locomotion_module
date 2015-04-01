@@ -10,8 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   genmsg
   oddbot_msgs
-  oddbot_lib
   dynamic_reconfigure
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -74,9 +74,9 @@ find_package(catkin REQUIRED COMPONENTS
 #  std_msgs
 #)
 
-generate_dynamic_reconfigure_options(
-	cfg/locomotionModule.cfg
-)
+# generate_dynamic_reconfigure_options(
+# 	cfg/locomotionModule.cfg
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -106,23 +106,38 @@ include_directories(include
 )
 
 ## Declare a cpp library
-# add_library(oddbot_lib
-#   src/${PROJECT_NAME}/get_subnet.cpp
-#   src/${PROJECT_NAME}/Serial.cpp
-# )
+add_library(locomotion_module_lib
+  src/Modules/DCMotor.cpp
+)
 
 ## Declare a cpp executable
-add_executable(locom_main src/locom_main.cpp src/locomotion_module.cpp)
+add_executable(locom_module src/locom_module.cpp)
+add_executable(locom_odom src/locom_odom.cpp)
+add_executable(locom_tf src/locom_tf.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(oddbot_boot_node oddbot_boot_generate_messages_cpp)
-add_dependencies(locom_main ${PROJECT_NAME}_gencfg)
+# add_dependencies(locom_module ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(locom_main
+target_link_libraries(locom_module
   ${catkin_LIBRARIES}
+  locomotion_module_lib
 )
+
+target_link_libraries(locom_odom
+  ${catkin_LIBRARIES}
+  locomotion_module_lib
+)
+
+target_link_libraries(locom_tf
+  ${catkin_LIBRARIES}
+  locomotion_module_lib
+)
+
+set_target_properties(locom_module PROPERTIES COMPILE_FLAGS -std=c++11)
+set_target_properties(locom_tf PROPERTIES COMPILE_FLAGS -std=c++11)
 
 #############
 ## Install ##

@@ -1,0 +1,42 @@
+connector_1:
+  x: -0.16
+  y: 0.0
+  z: 0.075
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.0
+connector_2:
+  x: -0.05318
+  y: 0.0
+  z: 0.0
+  roll: 1.5708
+  pitch: 0.0
+  yaw: 1.5708
+connector_3:
+  x: 0.0
+  y: -0.07047
+  z: 0.0
+  roll: 1.5708
+  pitch: 0.0
+  yaw: 0.0
+connector_4:
+  x: -0.26412
+  y: 0.0
+  z: 0.0
+  roll: 1.5708
+  pitch: 0.0
+  yaw: -1.5708
+connector_5:
+  x: 0.0
+  y: 0.07047
+  z: 0.0
+  roll: 1.5708
+  pitch: 0.0
+  yaw: 3.1416
+footprint:
+  x: 0.0
+  y: 0.0
+  z: 0.085
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.0
