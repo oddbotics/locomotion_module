@@ -62,9 +62,18 @@ void DCMotor::calculateDesiredVelocity(double x, double y, double wz){
 	double ox = base_joint_tf.getOrigin().x();
 	double oy = base_joint_tf.getOrigin().y();
 	double r = sqrt(pow(ox,2) + pow(oy,2)) * (ox*oy)/fabs(ox*oy);
+
+	if (ox < 0.00001 || ox > -0.00001){
+ 		ox = 0.0;
+		r = sqrt(pow(ox,2) + pow(oy,2)) * (oy)/fabs(oy);
+	} else if (oy < 0.00001 || oy > -0.00001){
+		oy = 0.0;
+		r = sqrt(pow(ox,2) + pow(oy,2)) * (ox)/fabs(ox);
+	}
+
 	ROS_INFO("tf info: x: %f, y: %f, r: %f",ox,oy,r);
 	this->des_motor_vel_mps += y*cos(atan2(oy,ox));
-	this->des_motor_vel_mps += x*sin(atan2(oy,ox));
+	this->des_motor_vel_mps += -1*x*sin(atan2(oy,ox));
 	this->des_motor_vel_mps += wz*r;
 	ROS_INFO("calced vel %f", this->des_motor_vel_mps);
 }
