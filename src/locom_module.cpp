@@ -33,16 +33,53 @@ void LocomotionModule::findActiveModules(){
     ROS_INFO("LOOKING FOR %s",loc.c_str());
     std::string key;
     if (ros::param::search(loc, key) && ~active_ports[i]){
-      ROS_INFO("FOUND_IT");
       //get the value
       std::string val;
       ros::param::get(key, val);
-      active_ports[i] = true;
-      //see if it is a motor
+      //active_port[i] = true;
+      //see if it is a dc motor
       if(val.compare("dc_motor") == 0){
-        DCMotor * motor = new DCMotor(this->connector_num[i]);
-     	this->actuation.push_back(motor);
-//     	this->module_list.push_back(motor);
+        //try to get the transform before added
+	try {
+	  std::string from = std::string("connector_" + std::to_string(i));
+	  std::string to = std::string("dc_motor_" + std::string(std::to_string(i) + "/wheel"));
+	  tf::StampedTransform transform;
+	  listener.lookupTransform(from,to,ros::Time(0),transform);
+	  DCMotor * motor = new DCMotor(this->connector_num[i]);
+     	  this->actuation.push_back(motor);
+	  this->active_ports[i] = true;
+	  ROS_INFO("MODULE AT CONNECTOR %d ADDED", i);
+    	} catch (tf::TransformException ex){
+          ROS_INFO("PARAM THER BUT NO TF");
+	}	  
+      }
+    } 
+    else if(active_ports[i]){
+      //get the Motor
+      DCMotor * motor;
+      int loc;
+      for(int m = 0; m < actuation.size(); m++){
+	if(actuation[m]->getPort() == i){
+	  motor = actuation[m];
+          loc = m;
+	}
+      }
+      //get the type
+      if(motor->getType().compare("dc_motor") == 0){
+        //try to get the transform
+        try {
+          std::string from = std::string("connector_" + std::to_string(i));
+          std::string to = std::string("dc_motor_" + std::string(std::to_string(i) + "/wheel"));
+          tf::StampedTransform transform;
+          listener.lookupTransform(from,to,ros::Time(0),transform);
+          ROS_INFO("MODULE STILL AT CONNECTOR %d ADDED", i);
+        } catch (tf::TransformException ex){
+          ROS_INFO("MODULE AT CONNECTOR %d NO LONGER THERE",i);
+	  ROS_INFO("REMOVING");
+	  active_ports[i] = false;
+	  delete actuation[i];
+  	  this->actuation.erase(this->actuation.begin()+(loc-1));
+        }         
       }
     }
   }
@@ -98,15 +135,20 @@ int main(int argc, char * argv[]){
   ros::init(argc, argv, "locomotion_module");
   
   //initialize the locomotion module (assume modules are plugged in and running)
-  LocomotionModule locom = LocomotionModule();
-  locom.findActiveModules();
+  LocomotionModule * locom = new LocomotionModule();
+  locom->findActiveModules();
+  double last_check = ros::Time::now().toSec();
 
   ros::Rate rate(30.0);
   while(ros::ok()){
-    //check everything still connected or if new things connected (ping modules) (every 30s)
-    
+    if(ros::Time::now().toSec() - last_check > 10.0){
+    	//check everything still connected or if new things connected (ping modules) (every 10s)
+    	locom->findActiveModules();
+	last_check = ros::Time::now().toSec();
+    }    
+
     //publish current Robot velocity
-    locom.updateCurrentRobotVelocity();
+    locom->updateCurrentRobotVelocity();
 
     ros::spinOnce();
     rate.sleep();

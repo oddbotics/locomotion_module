@@ -13,6 +13,7 @@
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Twist.h"
 #include "tf/transform_broadcaster.h"
+#include "tf/transform_listener.h"
 #include "nav_msgs/Odometry.h"
 #include "oddbot_msgs/ActuationCommand.h"
 #include "oddbot_msgs/ActuationFeedback.h"
@@ -46,6 +47,7 @@ class LocomotionModule
     std::vector<bool> active_ports;
     //std::vector<Module> module_list; 
     
+    tf::TransformListener listener;
     ros::Publisher robot_vel_pub;
     ros::Subscriber cmd_vel_sub;
 };
