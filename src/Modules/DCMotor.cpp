@@ -23,10 +23,14 @@ DCMotor::DCMotor(int location) : Module(location){
 	
 	cmd_pub = nh.advertise<oddbot_msgs::ActuationCommand>(command, 1000);
 	fdbk_sub = nh.subscribe(feedback, 1000, &DCMotor::motorCallback, this);
+	
+	last_report = ros::Time::now().toSec();
+
 
 }
 
 void DCMotor::motorCallback(const oddbot_msgs::ActuationFeedback::ConstPtr& msg){
+  last_report = ros::Time::now().toSec();
   double motorVel;
   for(int i = 0; i < msg->item.size(); i++){
     if(msg->item[i].compare("cur_vel_mps") == 0){
@@ -50,37 +54,46 @@ void DCMotor::motorCallback(const oddbot_msgs::ActuationFeedback::ConstPtr& msg)
 }
 
 void DCMotor::calculateDesiredVelocity(double x, double y, double wz){
-  ROS_INFO("frame %s", this->frame.c_str());
+//  ROS_INFO("frame %s", this->frame.c_str());
 	try{
-		listener.lookupTransform("base_link", this->frame,  
+	  listener.lookupTransform("base_link", this->frame,  
 				                   ros::Time(0), base_joint_tf);
+//	  listener.lookupTransform(this->frame, "base_link",
+  //                                                 ros::Time(0), joint_base_tf);
 	} catch (tf::TransformException ex){
-	  ROS_INFO("NO TF RECEIVED");
+//	  ROS_INFO("NO TF RECEIVED");
 	}
-  ROS_INFO("GOT COMMANDlinear: %f, angular %f",x,wz);	
+  //ROS_INFO("GOT COMMANDlinear: %f, angular %f",x,wz);	
   this->des_motor_vel_mps = 0.0;
 	double ox = base_joint_tf.getOrigin().x();
 	double oy = base_joint_tf.getOrigin().y();
-	double r = sqrt(pow(ox,2) + pow(oy,2)) * (ox*oy)/fabs(ox*oy);
+	//double ox = joint_base_tf.getOrigin().x();
+        //double oy = joint_base_tf.getOrigin().y();
 
-	if (ox < 0.00001 || ox > -0.00001){
+	double r = sqrt(pow(ox,2) + pow(oy,2)) * (ox*oy)/fabs(ox*oy);
+        ROS_INFO("tf info: x: %f, y: %f, r: %f",ox,oy,r);
+
+	if (ox < 0.00001 && ox > -0.00001){
  		ox = 0.0;
 		r = sqrt(pow(ox,2) + pow(oy,2)) * (oy)/fabs(oy);
-	} else if (oy < 0.00001 || oy > -0.00001){
+	} 
+	if (oy < 0.00001 && oy > -0.00001){
 		oy = 0.0;
 		r = sqrt(pow(ox,2) + pow(oy,2)) * (ox)/fabs(ox);
 	}
-
-	ROS_INFO("tf info: x: %f, y: %f, r: %f",ox,oy,r);
-	this->des_motor_vel_mps += y*cos(atan2(oy,ox));
+	if(isnan(r)){r = 0.0;}
+//	ROS_INFO("tf info: x: %f, y: %f, r: %f",ox,oy,r);
+//	ROS_INFO("other:   x: %f, y: %f",joint_base_tf.getOrigin().x(),joint_base_tf.getOrigin().y());
+	this->des_motor_vel_mps += -1*y*cos(atan2(oy,ox));
 	this->des_motor_vel_mps += -1*x*sin(atan2(oy,ox));
-	this->des_motor_vel_mps += wz*r;
+	this->des_motor_vel_mps += wz*fabs(r);
 	ROS_INFO("calced vel %f", this->des_motor_vel_mps);
+	msg.des_ctrl = this->des_motor_vel_mps;
 }
 
 void DCMotor::publishDesiredVelocity(){
-  oddbot_msgs::ActuationCommand msg;
-  msg.des_ctrl = this->des_motor_vel_mps;
+//  oddbot_msgs::ActuationCommand msg;
+//  msg.des_ctrl = this->des_motor_vel_mps;
   cmd_pub.publish(msg);
-  ROS_INFO("PUBLISHED COMMAND: %f", msg.des_ctrl);
+//  ROS_INFO("PUBLISHED COMMAND: %f", msg.des_ctrl);
 }

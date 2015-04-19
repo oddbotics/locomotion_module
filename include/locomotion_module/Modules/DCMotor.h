@@ -16,6 +16,7 @@ class DCMotor : public Module
     std::string getType(){return "dc_motor";} 
     void calculateDesiredVelocity(double x, double y, double wz);  
     void publishDesiredVelocity();
+    double getLastReport(){return this->last_report;}
 
   private:
 
@@ -25,6 +26,10 @@ class DCMotor : public Module
     double des_motor_vel_mps;
     std::string frame;
     tf::StampedTransform joint_base_tf,base_joint_tf;
+    
+    oddbot_msgs::ActuationCommand msg;
+
+    double last_report;
     
     tf::TransformListener listener;
     ros::Publisher cmd_pub;
